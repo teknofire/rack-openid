@@ -95,7 +95,7 @@ module Rack #:nodoc:
       # Don't try to be a consumer on requests that should be 
       # handled by an IDP
       if req.params["openid.mode"] && 
-            !IDP_MODES.include? req.params["openid.mode"]
+            !IDP_MODES.include?(req.params["openid.mode"])
         complete_authentication(env)
       end
 
