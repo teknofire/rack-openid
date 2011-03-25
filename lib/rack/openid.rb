@@ -69,7 +69,7 @@ module Rack #:nodoc:
     RESPONSE = "rack.openid.response"
     AUTHENTICATE_HEADER = "WWW-Authenticate"
     AUTHENTICATE_REGEXP = /^OpenID/
-
+    IDP_MODES = ['checkid_immediate', 'checkid_setup']
     URL_FIELD_SELECTOR = lambda { |field| field.to_s =~ %r{^https?://} }
 
     # :startdoc:
@@ -91,7 +91,11 @@ module Rack #:nodoc:
     # returns a <tt>[status, header, body]</tt> response.
     def call(env)
       req = Rack::Request.new(env)
-      if req.params["openid.mode"]
+  
+      # Don't try to be a consumer on requests that should be 
+      # handled by an IDP
+      if req.params["openid.mode"] && 
+            !IDP_MODES.include? req.params["openid.mode"]
         complete_authentication(env)
       end
 
